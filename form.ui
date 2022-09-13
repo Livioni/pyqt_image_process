@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>802</width>
-    <height>600</height>
+    <width>1664</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,24 +16,24 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>340</y>
+     <x>40</x>
+     <y>520</y>
      <width>211</width>
      <height>251</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="pushButton">
       <property name="text">
        <string>Select Image</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pushButton_2">
       <property name="text">
-       <string>Show Image</string>
+       <string>Save Image</string>
       </property>
      </widget>
     </item>
@@ -43,43 +43,92 @@
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>340</y>
+     <y>520</y>
      <width>211</width>
      <height>251</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_2"/>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QPushButton" name="pushButton_3">
+      <property name="text">
+       <string>GrayScale</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_4">
+      <property name="text">
+       <string>Gray Histogram</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_5">
+      <property name="text">
+       <string>Histogram Equalization</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>550</x>
-     <y>340</y>
+     <x>540</x>
+     <y>520</y>
      <width>211</width>
      <height>251</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3"/>
   </widget>
-  <widget class="QGraphicsView" name="graphicsView">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>30</y>
-     <width>341</width>
-     <height>291</height>
+     <x>190</x>
+     <y>490</y>
+     <width>60</width>
+     <height>16</height>
     </rect>
+   </property>
+   <property name="text">
+    <string>Raw</string>
    </property>
   </widget>
-  <widget class="QGraphicsView" name="graphicsView_2">
+  <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>420</x>
-     <y>30</y>
-     <width>341</width>
-     <height>291</height>
+     <x>1350</x>
+     <y>490</y>
+     <width>91</width>
+     <height>20</height>
     </rect>
    </property>
+   <property name="text">
+    <string>Processed</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>1621</width>
+     <height>471</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item>
+     <widget class="QGraphicsView" name="graphicsView_2"/>
+    </item>
+    <item>
+     <widget class="QGraphicsView" name="graphicsView_3"/>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
