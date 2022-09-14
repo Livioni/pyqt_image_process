@@ -2,7 +2,7 @@
 
 ## Enviroment and Dependency
 
-- macOS Monterey Apple M1 Max
+- macOS Monterey 12.6 Apple M1 Max
 
 - Opencv-python 4.5.5 (Rosetta2)
 
