@@ -66,7 +66,7 @@ def gradient_sharpening(img):
             f2 = abs(int(img[row][colmun+1])-int(img[row][colmun]))
             grad = __saturated(f1+f2)
             grad_img[row][colmun] = grad
-            new_img[row][colmun] = __saturated(grad + img[row][colmun])
+            new_img[row][colmun] = __saturated(img[row][colmun] - grad)
     return new_img, grad_img
 
 def laplace_sharpening(img):
