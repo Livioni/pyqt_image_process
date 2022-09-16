@@ -32,15 +32,11 @@ Non opencv library implementation. Easy to code in python but super slow.
     
 3. [X] Filter
 
-    1. [X] average filter $3\times 3$
-    
-    2. [X] median filter $3\times 3$
-    
-    3. [X] side window filter (average side window filter, also $3\times3$ )
-    
+    1. [X] average filter $3\times 3$.
+    2. [X] median filter $3\times 3$.
+    3. [X] side window filter (average side window filter, also $3\times3$ ).
     4. [X] morphological filter : This function is for homework exclusively, please select the exlusive image.
-    
-    5. [X] Diy gaussian filter :  Please input gaussain template:  like $[[1,2,1],[2,8,2],[1,2,1]]$ or $[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]]$
+    5. [X] Diy gaussian filter :  Please input gaussain template:  like $[[1,2,1],[2,8,2],[1,2,1]]$ or $[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]]$.
     
        
     
