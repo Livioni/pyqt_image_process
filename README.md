@@ -11,6 +11,11 @@ Non opencv library implementation. Easy to code in python but super slow.
 
 ![截屏2022-09-14 23.27.32](README.assets/%E6%88%AA%E5%B1%8F2022-09-14%2023.27.32.png)
 
-## Link 
+## Functions
+
+1. image intensification
+2. edge detection
+
+## Link
 
 C++ version: https://github.com/QiTianyu-0403/OpenCVImage
