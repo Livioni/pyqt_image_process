@@ -25,7 +25,7 @@ class Ui_Widget(object):
         Widget.resize(1664, 737)
         self.verticalLayoutWidget = QWidget(Widget)
         self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
-        self.verticalLayoutWidget.setGeometry(QRect(40, 520, 211, 131))
+        self.verticalLayoutWidget.setGeometry(QRect(40, 520, 211, 201))
         self.verticalLayout = QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -38,6 +38,16 @@ class Ui_Widget(object):
         self.pushButton_2.setObjectName(u"pushButton_2")
 
         self.verticalLayout.addWidget(self.pushButton_2)
+
+        self.pushButton_18 = QPushButton(self.verticalLayoutWidget)
+        self.pushButton_18.setObjectName(u"pushButton_18")
+
+        self.verticalLayout.addWidget(self.pushButton_18)
+
+        self.pushButton_19 = QPushButton(self.verticalLayoutWidget)
+        self.pushButton_19.setObjectName(u"pushButton_19")
+
+        self.verticalLayout.addWidget(self.pushButton_19)
 
         self.ClearButton = QPushButton(self.verticalLayoutWidget)
         self.ClearButton.setObjectName(u"ClearButton")
@@ -147,6 +157,43 @@ class Ui_Widget(object):
         self.label_3 = QLabel(Widget)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setGeometry(QRect(790, 490, 131, 20))
+        self.verticalLayoutWidget_4 = QWidget(Widget)
+        self.verticalLayoutWidget_4.setObjectName(u"verticalLayoutWidget_4")
+        self.verticalLayoutWidget_4.setGeometry(QRect(750, 520, 201, 201))
+        self.verticalLayout_4 = QVBoxLayout(self.verticalLayoutWidget_4)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.label_6 = QLabel(self.verticalLayoutWidget_4)
+        self.label_6.setObjectName(u"label_6")
+        self.label_6.setMaximumSize(QSize(16777215, 72))
+
+        self.verticalLayout_4.addWidget(self.label_6)
+
+        self.pushButton_13 = QPushButton(self.verticalLayoutWidget_4)
+        self.pushButton_13.setObjectName(u"pushButton_13")
+
+        self.verticalLayout_4.addWidget(self.pushButton_13)
+
+        self.pushButton_14 = QPushButton(self.verticalLayoutWidget_4)
+        self.pushButton_14.setObjectName(u"pushButton_14")
+
+        self.verticalLayout_4.addWidget(self.pushButton_14)
+
+        self.pushButton_15 = QPushButton(self.verticalLayoutWidget_4)
+        self.pushButton_15.setObjectName(u"pushButton_15")
+
+        self.verticalLayout_4.addWidget(self.pushButton_15)
+
+        self.pushButton_16 = QPushButton(self.verticalLayoutWidget_4)
+        self.pushButton_16.setObjectName(u"pushButton_16")
+
+        self.verticalLayout_4.addWidget(self.pushButton_16)
+
+        self.pushButton_17 = QPushButton(self.verticalLayoutWidget_4)
+        self.pushButton_17.setObjectName(u"pushButton_17")
+
+        self.verticalLayout_4.addWidget(self.pushButton_17)
+
 
         self.retranslateUi(Widget)
 
@@ -157,6 +204,8 @@ class Ui_Widget(object):
         Widget.setWindowTitle(QCoreApplication.translate("Widget", u"Widget", None))
         self.pushButton.setText(QCoreApplication.translate("Widget", u"Select Image", None))
         self.pushButton_2.setText(QCoreApplication.translate("Widget", u"Save Image", None))
+        self.pushButton_18.setText(QCoreApplication.translate("Widget", u"Impulse Noise", None))
+        self.pushButton_19.setText(QCoreApplication.translate("Widget", u"Gaussian Noise", None))
         self.ClearButton.setText(QCoreApplication.translate("Widget", u"Clear Windows", None))
         self.label_5.setText(QCoreApplication.translate("Widget", u"                Intensification", None))
         self.pushButton_3.setText(QCoreApplication.translate("Widget", u"GrayScale", None))
@@ -173,5 +222,11 @@ class Ui_Widget(object):
         self.label.setText(QCoreApplication.translate("Widget", u"Raw", None))
         self.label_2.setText(QCoreApplication.translate("Widget", u"Processed", None))
         self.label_3.setText(QCoreApplication.translate("Widget", u"Intermediate ", None))
+        self.label_6.setText(QCoreApplication.translate("Widget", u"                      Filter", None))
+        self.pushButton_13.setText(QCoreApplication.translate("Widget", u"Mean", None))
+        self.pushButton_14.setText(QCoreApplication.translate("Widget", u"Median", None))
+        self.pushButton_15.setText(QCoreApplication.translate("Widget", u"Side Window", None))
+        self.pushButton_16.setText(QCoreApplication.translate("Widget", u"Morphological Filter", None))
+        self.pushButton_17.setText(QCoreApplication.translate("Widget", u"Gaussian", None))
     # retranslateUi
 

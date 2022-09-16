@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys
 import cv2
-from PySide6.QtWidgets import QApplication, QWidget, QGraphicsScene, QFileDialog,QMessageBox
+from PySide6.QtWidgets import QApplication, QWidget, QGraphicsScene, QFileDialog,QMessageBox,QInputDialog
 from PySide6.QtGui import QPixmap, QImage
 # Important:
 # You need to run the following command to generate the ui_form.py file
@@ -9,7 +9,8 @@ from PySide6.QtGui import QPixmap, QImage
 #     pyside2-uic form.ui -o ui_form.py
 from ui_form import Ui_Widget
 from utility import rgb2gray,gray_histogram,histogram_equalize,gradient_sharpening,laplace_sharpening,\
-                    roberts,sobel,laplace,krisch,canny
+                    roberts,sobel,laplace,krisch,canny,impluse_noise,gaussian_noise,\
+                    mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter
 
 class Widget(QWidget):
     def __init__(self, parent=None):
@@ -32,6 +33,13 @@ class Widget(QWidget):
         self.ui.pushButton_10.clicked.connect(self.button_10_clicked)
         self.ui.pushButton_11.clicked.connect(self.button_11_clicked)
         self.ui.pushButton_12.clicked.connect(self.button_12_clicked)
+        self.ui.pushButton_13.clicked.connect(self.button_13_clicked)
+        self.ui.pushButton_14.clicked.connect(self.button_14_clicked)
+        self.ui.pushButton_15.clicked.connect(self.button_15_clicked)
+        self.ui.pushButton_16.clicked.connect(self.button_16_clicked)
+        self.ui.pushButton_17.clicked.connect(self.button_17_clicked)
+        self.ui.pushButton_18.clicked.connect(self.button_18_clicked)
+        self.ui.pushButton_19.clicked.connect(self.button_19_clicked)
 
 
         #graph views
@@ -45,15 +53,14 @@ class Widget(QWidget):
 
         #variables 
         self.image_path = None
-        self.image_matrix_buffer = None
+        self.image_matrix_buffer,self.image_matrix_buffer_2 = None,None
         self.image_pix_buffer,self.image_pix_buffer_2,self.image_pix_buffer_3 = None,None,None  
 
     def clear_windows(self):
-        self.image_matrix_buffer = None
-        self.image_pix_buffer,self.image_pix_buffer_2,self.image_pix_buffer_3 = None,None,None  
-        self.scene.clear()
         self.scene_2.clear()
         self.scene_3.clear()
+        self.image_matrix_buffer_2 = None
+        self.image_pix_buffer_2,self.image_pix_buffer_3 = None,None
         return
 
     def button_clicked(self):
@@ -160,6 +167,95 @@ class Widget(QWidget):
             self.image_pix_buffer_3 = pixmap
             self.__show_image(pixmap,self.scene_3)
         return
+
+    def button_13_clicked(self):
+        if self.image_matrix_buffer_2 is not None:
+            process_img = self.image_matrix_buffer_2
+        elif self.image_matrix_buffer is not None: 
+            process_img = self.image_matrix_buffer
+        else:
+            return
+        new_img = mean_filter(process_img)
+        pixmap = self.__conver2pixmap(new_img)
+        self.image_pix_buffer_3 = pixmap
+        self.__show_image(pixmap,self.scene_3)
+        return
+    
+    def button_14_clicked(self):
+        if self.image_matrix_buffer_2 is not None:
+            process_img = self.image_matrix_buffer_2
+        elif self.image_matrix_buffer is not None: 
+            process_img = self.image_matrix_buffer
+        else:
+            return
+        new_img = median_filter(process_img)
+        pixmap = self.__conver2pixmap(new_img)
+        self.image_pix_buffer_3 = pixmap
+        self.__show_image(pixmap,self.scene_3)
+        return
+
+    def button_15_clicked(self):
+        if self.image_matrix_buffer_2 is not None:
+            process_img = self.image_matrix_buffer_2
+        elif self.image_matrix_buffer is not None: 
+            process_img = self.image_matrix_buffer
+        else:
+            return
+        new_img = s_meanfilter(process_img,radius=1)
+        pixmap = self.__conver2pixmap(new_img)
+        self.image_pix_buffer_3 = pixmap
+        self.__show_image(pixmap,self.scene_3)
+        return
+
+    def button_16_clicked(self):
+        self.clear_windows()
+        QMessageBox.information(self,"Warning","This function is for homework exclusively, please select the exlusive image.")
+        img_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Image files (*.jpg *.jpeg *.bmp *.png) ") #pylint: disable=line-too-long
+        if img_path == '':
+            QMessageBox.information(self,"Warning","No file selected.")
+            return
+        else:  
+            self.image_matrix_buffer = None
+            img = cv2.imread(str(img_path))
+            self.image_matrix_buffer = img
+            self.image_pix_buffer = self.__conver2pixmap(img)
+            self.__show_image(self.image_pix_buffer,self.scene) 
+            self.image_matrix_buffer_2,self.image_matrix_buffer_3 = morphological_filter(self.image_matrix_buffer)
+
+            pixmap1 = self.__conver2pixmap(self.image_matrix_buffer_2)
+            pixmap2 = self.__conver2pixmap(self.image_matrix_buffer_3)
+            self.image_pix_buffer_2 = pixmap1
+            self.image_pix_buffer_3 = pixmap2
+            self.__show_image(pixmap1,self.scene_2)
+            self.__show_image(pixmap2,self.scene_3)
+        return
+
+    def button_17_clicked(self):
+        if self.image_matrix_buffer is not None:
+            text, ok = QInputDialog.getText(self, 'Gaussian', 'Please input gaussain template: \n like\"[[1,2,1],[2,8,2],[1,2,1]]\"')
+            if ok:
+                filtered_img = diy_gaussian_filter(self.image_matrix_buffer,template=text)
+                pixmap = self.__conver2pixmap(filtered_img)
+                self.image_pix_buffer_3 = pixmap
+                self.__show_image(pixmap,self.scene_3)
+        return
+
+    def button_18_clicked(self):
+        if self.image_matrix_buffer is not None:
+            self.image_matrix_buffer_2 = impluse_noise(self.image_matrix_buffer)
+            pixmap = self.__conver2pixmap(self.image_matrix_buffer_2)
+            self.image_pix_buffer_2 = pixmap
+            self.__show_image(pixmap,self.scene_2)
+        return
+
+    def button_19_clicked(self):
+        if self.image_matrix_buffer is not None:
+            self.image_matrix_buffer_2 = gaussian_noise(self.image_matrix_buffer)
+            pixmap = self.__conver2pixmap(self.image_matrix_buffer_2)
+            self.image_pix_buffer_2 = pixmap
+            self.__show_image(pixmap,self.scene_2)
+        return
+
 
     def __conver2pixmap(self,img):
         if len(img.shape) > 2:

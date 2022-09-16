@@ -1,11 +1,14 @@
+import imp
 import cv2
 import numpy as np
-
+import random
+from copy import deepcopy
 
 # 读一个图片并进行显示(图片路径需自己指定)
 # logo=cv2.imread("figures/lena.jpg")
 # logo=cv2.imread("figures/icon.jpeg")
 logo=cv2.imread("figures/logo_01.png")
+# logo=cv2.imread("figures/source.jpg")
 # cv2.imshow("image",logo)
 # cv2.waitKey(0)
 
@@ -57,8 +60,31 @@ def krisch(img):
     return edge
 
 
+def erode_demo(pic):
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (13, 13))
+    dst = cv2.erode(pic, kernel)
+    return dst
 
-new_img = canny(logo)
-cv2.imshow("image",new_img)
+def dilate_demo(binary):
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
+    dst = cv2.dilate(binary, kernel)
+    return dst
+
+
+def diy_gaussian_filter(img,template = '[[1,2,1],[2,8,2],[1,2,1]]'):
+    filtered_img = deepcopy(img)
+    template = eval(template)
+    kernal = np.array(template)/np.sum(template)
+    radius = int(np.floor(kernal.shape[0]/2))
+    for ch in range(filtered_img.shape[2]):
+        for row in range(radius,img.shape[0]-radius):
+            for colmun in range(radius,img.shape[1]-radius):
+                filtered_img[row][colmun][ch] = np.sum(np.multiply(img[row-radius:row+radius+1,colmun-radius:colmun+radius+1:,ch],kernal))
+    return filtered_img
+
+
+new_img = diy_gaussian_filter(logo,'[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]]')
+cv2.imshow("figure",new_img)
+cv2.imshow("figure1",logo)
 cv2.waitKey(0)
 
