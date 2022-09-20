@@ -321,3 +321,27 @@ def diy_gaussian_filter(img,template = '[[1,2,1],[2,8,2],[1,2,1]]'):
             for colmun in range(radius,img.shape[1]-radius):
                 filtered_img[row][colmun][ch] = np.sum(np.multiply(img[row-radius:row+radius+1,colmun-radius:colmun+radius+1:,ch],kernal))
     return filtered_img
+
+def affine_transform(img):
+    edge = img.shape
+    # 原图像中的三组坐标 根据[x,y] 表示的，而并非数组的行列
+    pts1 = np.float32([[0, 0] , [edge[1], 0], [0, edge[0]]])
+    # 转换后的三组对应坐标
+    pts2 = np.float32([[0,edge[0]*0.33], [edge[1]*0.85, edge[0]*0.25], [edge[1]*0.15, edge[0]*0.7]])
+    # 计算仿射变换矩阵
+    M = cv2.getAffineTransform(pts1, pts2)
+    # 执行变换
+    new_img = cv2.warpAffine(img, M ,edge[0:2])
+    return new_img
+
+def perspective_transform(img):
+    edge = img.shape
+    # 原图的四组顶点坐标
+    pts3D1 = np.float32([[0, 0], [edge[1], 0], [0, edge[0]], [edge[0]-1, edge[1]-1]])
+    # 转换后的四组坐标
+    pts3D2 = np.float32([[edge[1]*0.05, edge[0]*0.33], [edge[1]*0.9, edge[0]*0.25], [edge[1]*0.2, edge[0]*0.7], [edge[0]*0.8, edge[1]*0.9]])
+    # 计算透视放射矩阵
+    M = cv2.getPerspectiveTransform(pts3D1, pts3D2)
+    # 执行变换
+    new_img = cv2.warpPerspective(img, M, edge[0:2])
+    return new_img

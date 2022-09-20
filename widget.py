@@ -10,7 +10,8 @@ from PySide6.QtGui import QPixmap, QImage
 from ui_form import Ui_Widget
 from utility import rgb2gray,gray_histogram,histogram_equalize,gradient_sharpening,laplace_sharpening,\
                     roberts,sobel,laplace,krisch,canny,impluse_noise,gaussian_noise,\
-                    mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter
+                    mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter,\
+                    affine_transform,perspective_transform
 
 class Widget(QWidget):
     def __init__(self, parent=None):
@@ -40,7 +41,8 @@ class Widget(QWidget):
         self.ui.pushButton_17.clicked.connect(self.button_17_clicked)
         self.ui.pushButton_18.clicked.connect(self.button_18_clicked)
         self.ui.pushButton_19.clicked.connect(self.button_19_clicked)
-
+        self.ui.pushButton_20.clicked.connect(self.button_20_clicked)
+        self.ui.pushButton_21.clicked.connect(self.button_21_clicked)
 
         #graph views
         self.scene,self.scene_2,self.scene_3 = QGraphicsScene(),QGraphicsScene(),QGraphicsScene()
@@ -256,6 +258,21 @@ class Widget(QWidget):
             self.__show_image(pixmap,self.scene_2)
         return
 
+    def button_20_clicked(self):
+        if self.image_matrix_buffer is not None:
+            self.image_matrix_buffer_3 = affine_transform(self.image_matrix_buffer)
+            pixmap = self.__conver2pixmap(self.image_matrix_buffer_3)
+            self.image_pix_buffer_3 = pixmap
+            self.__show_image(pixmap,self.scene_3)
+        return
+
+    def button_21_clicked(self):
+        if self.image_matrix_buffer is not None:
+            self.image_matrix_buffer_3 = perspective_transform(self.image_matrix_buffer)
+            pixmap = self.__conver2pixmap(self.image_matrix_buffer_3)
+            self.image_pix_buffer_3 = pixmap
+            self.__show_image(pixmap,self.scene_3)
+        return        
 
     def __conver2pixmap(self,img):
         if len(img.shape) > 2:
