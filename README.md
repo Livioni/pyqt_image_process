@@ -37,7 +37,7 @@ Non opencv library implementation. Easy to code in python but super slow.
     5. [X] Diy gaussian filter :  Please input gaussain template:  like $[[1,2,1],[2,8,2],[1,2,1]]$ or $[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]]$.
 4. [X] Camera Calibration
 
-    [X] Bi-Camera Calibration
+5. [X] Bi-Camera Calibration
 
 ## Links
 
