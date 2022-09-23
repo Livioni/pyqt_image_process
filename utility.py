@@ -1,5 +1,4 @@
-from hashlib import new
-import cv2
+import cv2,os
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sci
@@ -331,17 +330,134 @@ def affine_transform(img):
     # 计算仿射变换矩阵
     M = cv2.getAffineTransform(pts1, pts2)
     # 执行变换
-    new_img = cv2.warpAffine(img, M ,edge[0:2])
+    new_img = cv2.warpAffine(img, M ,(edge[1],edge[0]))
     return new_img
 
 def perspective_transform(img):
     edge = img.shape
     # 原图的四组顶点坐标
-    pts3D1 = np.float32([[0, 0], [edge[1], 0], [0, edge[0]], [edge[0]-1, edge[1]-1]])
+    pts3D1 = np.float32([[214,73],[356,73] , [83,159], [491,159 ]])
     # 转换后的四组坐标
-    pts3D2 = np.float32([[edge[1]*0.05, edge[0]*0.33], [edge[1]*0.9, edge[0]*0.25], [edge[1]*0.2, edge[0]*0.7], [edge[0]*0.8, edge[1]*0.9]])
+    pts3D2 = np.float32([[83,17], [491,17], [83,159], [491,159]])
     # 计算透视放射矩阵
     M = cv2.getPerspectiveTransform(pts3D1, pts3D2)
     # 执行变换
-    new_img = cv2.warpPerspective(img, M, edge[0:2])
+    new_img = cv2.warpPerspective(img, M, (edge[1],edge[0]))
     return new_img
+
+def calib_camera(calib_dir, pattern_size=(9, 6), draw_points=False):
+    """
+    calibrate camera
+    :param calib_dir: str
+    :param pattern_size: (x, y), the number of points in x, y axes in the chessboard
+    :param draw_points: bool, whether to draw the chessboard points
+    """
+    object_points = []
+    image_points = []
+
+    xl = np.linspace(0, pattern_size[0], pattern_size[0], endpoint=False)
+    yl = np.linspace(0, pattern_size[1], pattern_size[1], endpoint=False)
+    xv, yv = np.meshgrid(xl, yl)
+    object_point = np.insert(np.stack([xv, yv], axis=-1), 2, 0, axis=-1).astype(np.float32).reshape([-1, 3])
+
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+    img_dir = calib_dir
+    assert os.path.isdir(img_dir), 'Path {} is not a dir'.format(img_dir)
+    imagenames = os.listdir(img_dir)
+    for imagename in imagenames:
+        if not os.path.splitext(imagename)[-1] in ['.jpg', '.png', '.bmp', '.tiff', '.jpeg']:
+            continue
+        img_path = os.path.join(img_dir, imagename)
+        img = cv2.imread(img_path)
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        ret, corners = cv2.findChessboardCorners(img_gray, patternSize=pattern_size)
+        if ret:
+
+            object_points.append(object_point)
+            corners_refined = cv2.cornerSubPix(img_gray, corners, (11, 11), (-1, -1), criteria)
+            image_points.append(corners.reshape([-1, 2]))
+            if draw_points:
+                cv2.drawChessboardCorners(img, pattern_size, corners_refined, ret)
+                if img.shape[0] * img.shape[1] > 1e6:
+                    scale = round((1. / (img.shape[0] * img.shape[1] // 1e6)) ** 0.5, 3)
+                    img_draw = cv2.resize(img, (0, 0), fx=scale, fy=scale)
+                else:
+                    img_draw = img
+
+                cv2.imshow('img', img_draw)
+                cv2.waitKey(0)
+
+    assert len(image_points) > 0, 'Cannot find any chessboard points, maybe incorrect pattern_size has been set'
+    reproj_err, k_cam, dist_coeffs, rvecs, tvecs = cv2.calibrateCamera(object_points,
+                                                                       image_points,
+                                                                       img_gray.shape[::-1],
+                                                                       None,
+                                                                       None,
+                                                                       criteria=criteria)
+    print("相机内参矩阵：",k_cam)
+    print("畸变系数：",dist_coeffs)
+    return 
+
+def __getImageList(img_dir):
+    imgPath = []
+    if os.path.exists(img_dir) is False:
+        print('error dir')
+    else:
+        for parent, dirNames, fileNames in os.walk(img_dir):
+            for fileName in fileNames:
+                imgPath.append(os.path.join(parent, fileName))
+    return imgPath
+
+def __getObjectPoints(m, n, k):
+    objP = np.zeros(shape=(m * n, 3), dtype=np.float32)
+    for i in range(m * n):
+        objP[i][0] = i % m
+        objP[i][1] = int(i / m)
+    return objP * k
+
+def bicalib_camera():
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    criteria_stereo = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    objPoint = __getObjectPoints(9, 6, 10)
+    
+    objPoints = []
+    imgPointsL = []
+    imgPointsR = []
+    imgPathL = 'chesspad/chesspadL'
+    imgPathR = 'chesspad/chesspadR'
+    filePathL = __getImageList(imgPathL)
+    filePathR = __getImageList(imgPathR)
+    
+    for i in range(len(filePathL)):
+        imgL = cv2.imread(filePathL[i])
+        imgR = cv2.imread(filePathR[i])
+        grayL = cv2.cvtColor(imgL, cv2.COLOR_BGR2GRAY)
+        grayR = cv2.cvtColor(imgR, cv2.COLOR_BGR2GRAY)
+        retL, cornersL = cv2.findChessboardCorners(grayL, (9, 6), None)
+        retR, cornersR = cv2.findChessboardCorners(grayR, (9, 6), None)
+        if (retL & retR) is True:
+            objPoints.append(objPoint)
+            cornersL2 = cv2.cornerSubPix(grayL, cornersL, (5, 5), (-1, -1), criteria)
+            cornersR2 = cv2.cornerSubPix(grayR, cornersR, (5, 5), (-1, -1), criteria)
+            imgPointsL.append(cornersL2)
+            imgPointsR.append(cornersR2)
+    retL, cameraMatrixL, distMatrixL, RL, TL = cv2.calibrateCamera(objPoints, imgPointsL, (640, 480), None, None)
+    retR, cameraMatrixR, distMatrixR, RR, TR = cv2.calibrateCamera(objPoints, imgPointsR, (640, 480), None, None)
+
+    retS, mLS, dLS, mRS, dRS, R, T, E, F = cv2.stereoCalibrate(objPoints, imgPointsL, 
+    imgPointsR, cameraMatrixL,
+                                                            distMatrixL, cameraMatrixR, 
+                                                            distMatrixR, (640, 480),
+                                                            criteria_stereo, flags=cv2.CALIB_USE_INTRINSIC_GUESS)
+
+    # R， T为相机2与相机1旋转平移矩阵
+    print("左相机内参数矩阵:\n",cameraMatrixL)
+    print('*' * 20)
+    print("右相机内参数矩阵:\n",cameraMatrixR)
+    print('*' * 20)
+    print("相机R旋转平移矩:\n",R)
+    print('*' * 20)
+    print("相机L旋转平移矩:\n",T)
+    return

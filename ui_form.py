@@ -268,8 +268,8 @@ class Ui_Widget(object):
         self.label_7.setText(QCoreApplication.translate("Widget", u"                   Correction", None))
         self.pushButton_20.setText(QCoreApplication.translate("Widget", u"Affine", None))
         self.pushButton_21.setText(QCoreApplication.translate("Widget", u"Perspective", None))
-        self.pushButton_22.setText("")
-        self.pushButton_23.setText("")
+        self.pushButton_22.setText(QCoreApplication.translate("Widget", u"Camera Calibration", None))
+        self.pushButton_23.setText(QCoreApplication.translate("Widget", u"Bi-camera Calibration", None))
         self.pushButton_24.setText("")
     # retranslateUi
 

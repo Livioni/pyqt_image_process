@@ -21,7 +21,6 @@ Non opencv library implementation. Easy to code in python but super slow.
     3. [X] histogram equalization
     4. [X] gradient sharpen
     5. [X] Laplace sharpen
-    
 2. [X] edge detection
 
     1. [X] Roberts
@@ -29,7 +28,6 @@ Non opencv library implementation. Easy to code in python but super slow.
     3. [X] Laplace
     4. [X] Krisch
     5. [X] Canny
-    
 3. [X] Filter
 
     1. [X] average filter $3\times 3$.
@@ -37,10 +35,9 @@ Non opencv library implementation. Easy to code in python but super slow.
     3. [X] side window filter (average side window filter, also $3\times3$ ).
     4. [X] morphological filter : This function is for homework exclusively, please select the exlusive image.
     5. [X] Diy gaussian filter :  Please input gaussain template:  like $[[1,2,1],[2,8,2],[1,2,1]]$ or $[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]]$.
-    
-       
-    
-       
+4. [X] Camera Calibration
+
+    [X] Bi-Camera Calibration
 
 ## Links
 
@@ -49,3 +46,7 @@ C++ Version: https://github.com/QiTianyu-0403/OpenCVImage
 Canny: https://github.com/StefanPitur/Edge-detection---Canny-detector/blob/master/canny.py
 
 Side window filter python implementation: https://github.com/Beta-y/Side_Window_Filtering
+
+Camera Calibration: https://blog.csdn.net/qq_41035283/article/details/123778452
+
+Bi-Camera Calibration: https://blog.csdn.net/qq_36076137/article/details/118383472

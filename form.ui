@@ -334,14 +334,14 @@
     <item>
      <widget class="QPushButton" name="pushButton_22">
       <property name="text">
-       <string/>
+       <string>Camera Calibration</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_23">
       <property name="text">
-       <string/>
+       <string>Bi-camera Calibration</string>
       </property>
      </widget>
     </item>

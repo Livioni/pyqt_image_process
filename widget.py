@@ -11,7 +11,7 @@ from ui_form import Ui_Widget
 from utility import rgb2gray,gray_histogram,histogram_equalize,gradient_sharpening,laplace_sharpening,\
                     roberts,sobel,laplace,krisch,canny,impluse_noise,gaussian_noise,\
                     mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter,\
-                    affine_transform,perspective_transform
+                    affine_transform,perspective_transform,calib_camera,bicalib_camera
 
 class Widget(QWidget):
     def __init__(self, parent=None):
@@ -43,6 +43,7 @@ class Widget(QWidget):
         self.ui.pushButton_19.clicked.connect(self.button_19_clicked)
         self.ui.pushButton_20.clicked.connect(self.button_20_clicked)
         self.ui.pushButton_21.clicked.connect(self.button_21_clicked)
+        self.ui.pushButton_22.clicked.connect(self.button_22_clicked)
 
         #graph views
         self.scene,self.scene_2,self.scene_3 = QGraphicsScene(),QGraphicsScene(),QGraphicsScene()
@@ -272,7 +273,15 @@ class Widget(QWidget):
             pixmap = self.__conver2pixmap(self.image_matrix_buffer_3)
             self.image_pix_buffer_3 = pixmap
             self.__show_image(pixmap,self.scene_3)
-        return        
+        return      
+
+    def button_22_clicked(self):
+        calib_camera('chesspad/')
+        return     
+    
+    def button_23_clicked(self):
+        bicalib_camera()
+        return   
 
     def __conver2pixmap(self,img):
         if len(img.shape) > 2:
