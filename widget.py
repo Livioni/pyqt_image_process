@@ -44,6 +44,7 @@ class Widget(QWidget):
         self.ui.pushButton_20.clicked.connect(self.button_20_clicked)
         self.ui.pushButton_21.clicked.connect(self.button_21_clicked)
         self.ui.pushButton_22.clicked.connect(self.button_22_clicked)
+        self.ui.pushButton_23.clicked.connect(self.button_23_clicked)
 
         #graph views
         self.scene,self.scene_2,self.scene_3 = QGraphicsScene(),QGraphicsScene(),QGraphicsScene()
