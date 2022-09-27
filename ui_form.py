@@ -231,6 +231,43 @@ class Ui_Widget(object):
 
         self.verticalLayout_5.addWidget(self.pushButton_24)
 
+        self.verticalLayoutWidget_6 = QWidget(Widget)
+        self.verticalLayoutWidget_6.setObjectName(u"verticalLayoutWidget_6")
+        self.verticalLayoutWidget_6.setGeometry(QRect(1190, 520, 220, 201))
+        self.verticalLayout_6 = QVBoxLayout(self.verticalLayoutWidget_6)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.label_8 = QLabel(self.verticalLayoutWidget_6)
+        self.label_8.setObjectName(u"label_8")
+        self.label_8.setMaximumSize(QSize(16777215, 72))
+
+        self.verticalLayout_6.addWidget(self.label_8)
+
+        self.pushButton_25 = QPushButton(self.verticalLayoutWidget_6)
+        self.pushButton_25.setObjectName(u"pushButton_25")
+
+        self.verticalLayout_6.addWidget(self.pushButton_25)
+
+        self.pushButton_26 = QPushButton(self.verticalLayoutWidget_6)
+        self.pushButton_26.setObjectName(u"pushButton_26")
+
+        self.verticalLayout_6.addWidget(self.pushButton_26)
+
+        self.pushButton_27 = QPushButton(self.verticalLayoutWidget_6)
+        self.pushButton_27.setObjectName(u"pushButton_27")
+
+        self.verticalLayout_6.addWidget(self.pushButton_27)
+
+        self.pushButton_28 = QPushButton(self.verticalLayoutWidget_6)
+        self.pushButton_28.setObjectName(u"pushButton_28")
+
+        self.verticalLayout_6.addWidget(self.pushButton_28)
+
+        self.pushButton_29 = QPushButton(self.verticalLayoutWidget_6)
+        self.pushButton_29.setObjectName(u"pushButton_29")
+
+        self.verticalLayout_6.addWidget(self.pushButton_29)
+
 
         self.retranslateUi(Widget)
 
@@ -271,5 +308,11 @@ class Ui_Widget(object):
         self.pushButton_22.setText(QCoreApplication.translate("Widget", u"Camera Calibration", None))
         self.pushButton_23.setText(QCoreApplication.translate("Widget", u"Bi-camera Calibration", None))
         self.pushButton_24.setText("")
+        self.label_8.setText(QCoreApplication.translate("Widget", u"                   Detection", None))
+        self.pushButton_25.setText(QCoreApplication.translate("Widget", u"Threshold", None))
+        self.pushButton_26.setText(QCoreApplication.translate("Widget", u"OTSU", None))
+        self.pushButton_27.setText(QCoreApplication.translate("Widget", u"Kittler", None))
+        self.pushButton_28.setText(QCoreApplication.translate("Widget", u"Single Gaussian Model", None))
+        self.pushButton_29.setText(QCoreApplication.translate("Widget", u"Mixed Gaussian Model", None))
     # retranslateUi
 

@@ -466,3 +466,126 @@ def bicalib_camera():
     print("基础矩阵:\n",F)
     print('*' * 20)
     return
+
+def threshold(img,thres):
+    if thres != '':
+        thres = eval(thres)
+        gray_img = rgb2gray(img)
+
+        gray_img[gray_img < thres] = 0
+        gray_img[gray_img >= thres] = 255 
+    else:
+        pass
+    return gray_img
+
+def otsu(img):
+    gray_img = rgb2gray(img)
+    h = gray_img.shape[0]
+    w = gray_img.shape[1]
+    N = h * w
+    threshold_t = 0
+    max_g = 0
+
+    # 遍历每一个灰度级
+    for t in range(256):
+        # 使用numpy直接对数组进行运算
+        n0 = gray_img[np.where(gray_img < t)]
+        n1 = gray_img[np.where(gray_img >= t)]
+        w0 = len(n0) / N
+        w1 = len(n1) / N
+        u0 = np.mean(n0) if len(n0) > 0 else 0.
+        u1 = np.mean(n1) if len(n0) > 0 else 0.
+
+        g = w0 * w1 * (u0 - u1) ** 2
+        if g > max_g:
+            max_g = g
+            threshold_t = t
+    # print('类间方差最大阈值：', threshold_t)
+    gray_img[gray_img < threshold_t] = 0
+    gray_img[gray_img >= threshold_t] = 255
+    return gray_img
+
+def kittle(img):
+    gray_img = rgb2gray(img)
+    edge = np.zeros(gray_img.shape,dtype=np.uint16)
+    uend = np.zeros(gray_img.shape,dtype=np.uint16)
+    for r in range(1,edge.shape[0]-1):
+        for c in range(1,edge.shape[1]-1):
+            fi = gray_img[r+1][c]-gray_img[r-1][c]
+            fj = int(gray_img[r][c+1]-gray_img[r][c-1])
+            edge[r][c] = max(abs(fi),abs(fj))
+            uend[r][c] = edge[r][c] * gray_img[r][c]
+
+    thres = np.sum(uend)/np.sum(edge)
+    gray_img[gray_img < thres] = 0
+    gray_img[gray_img >= thres] = 255
+    return gray_img
+
+def bulidbg(path):
+    cap = cv2.VideoCapture(path)
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
+    # 创建混合高斯模型
+    fgbg = cv2.createBackgroundSubtractorMOG2()
+    while(True):
+        ret, frame = cap.read()
+        fgmask = fgbg.apply(frame)
+        # print(frame)
+        #形态学开运算去噪点（先腐蚀，再膨胀）
+        fgmask = cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)
+        cv2.imshow('fgmask', fgmask)
+        #寻找视频中的轮廓
+        contours, hierarchy = cv2.findContours(fgmask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for c in contours:
+            perimeter = cv2.arcLength(c,True)
+            if perimeter > 188:
+                x,y,w,h = cv2.boundingRect(c)
+                cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+
+        cv2.imshow('frame',frame)
+
+        k = cv2.waitKey(150) & 0xff
+        if k == 27:
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+    return
+
+def single_gauss(path):
+    T = 2 # 前后景区分常数
+    lr=0.95 # 学习率
+    cap=cv2.VideoCapture(path)
+    isFirst=True
+
+    while cap.isOpened():
+        ret,frame=cap.read()
+        if frame is not None:
+            gray=cv2.cvtColor(frame,cv2.COLOR_RGB2GRAY)
+            # 使用第一帧来初始化参数
+            if isFirst:
+                mean = gray
+                std = 20 * np.ones_like(gray)
+                var = std * std
+                isFirst = False
+            else: 
+                # 标识目标
+                cv2.imshow('orginal',frame)
+                frontground = np.zeros_like(gray)
+                for i in range(gray.shape[0]):
+                    for j in range(gray.shape[1]):
+                        if abs(int(gray[i][j]) - int(mean[i][j])) < T * std[i][j]:
+                            mean[i][j] = __saturated(lr * int(mean[i][j]) + (1-lr) * int(gray[i][j]))
+                            var[i][j] = __saturated(lr * var[i][j]+(1-lr) * (int(gray[i][j])-int(mean[i][j]))**2)
+                            std[i][j] = __saturated(np.sqrt(var[i][j]))                
+                        else:
+                            frontground[i][j] = gray[i][j]
+                kernel1 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+                dst = cv2.erode(frontground, kernel1)
+                kernel2 = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+                dst = cv2.dilate(dst, kernel2)
+                cv2.imshow('tracking',dst)
+                if cv2.waitKey(50) and 0xFF ==ord('q'):
+                    break
+        else:
+            break

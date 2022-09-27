@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from importlib.resources import path
 import sys
 import cv2
 from PySide6.QtWidgets import QApplication, QWidget, QGraphicsScene, QFileDialog,QMessageBox,QInputDialog
@@ -11,7 +12,8 @@ from ui_form import Ui_Widget
 from utility import rgb2gray,gray_histogram,histogram_equalize,gradient_sharpening,laplace_sharpening,\
                     roberts,sobel,laplace,krisch,canny,impluse_noise,gaussian_noise,\
                     mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter,\
-                    affine_transform,perspective_transform,calib_camera,bicalib_camera
+                    affine_transform,perspective_transform,calib_camera,bicalib_camera,otsu,threshold,\
+                    kittle,bulidbg,single_gauss
 
 class Widget(QWidget):
     def __init__(self, parent=None):
@@ -45,7 +47,13 @@ class Widget(QWidget):
         self.ui.pushButton_21.clicked.connect(self.button_21_clicked)
         self.ui.pushButton_22.clicked.connect(self.button_22_clicked)
         self.ui.pushButton_23.clicked.connect(self.button_23_clicked)
+        
 
+        self.ui.pushButton_25.clicked.connect(self.button_25_clicked)
+        self.ui.pushButton_26.clicked.connect(self.button_26_clicked)
+        self.ui.pushButton_27.clicked.connect(self.button_27_clicked)
+        self.ui.pushButton_28.clicked.connect(self.button_28_clicked)
+        self.ui.pushButton_29.clicked.connect(self.button_29_clicked)
         #graph views
         self.scene,self.scene_2,self.scene_3 = QGraphicsScene(),QGraphicsScene(),QGraphicsScene()
         self.ui.graphicsView.setScene(self.scene)
@@ -284,6 +292,51 @@ class Widget(QWidget):
         bicalib_camera()
         return   
 
+    def button_25_clicked(self):
+        if self.image_matrix_buffer is not None:
+            text, ok = QInputDialog.getText(self, 'Gaussian', 'Please input the threshold: \n \"0-255\"')
+            if ok:
+                if self.image_matrix_buffer is not None:
+                    self.image_matrix_buffer_3 = threshold(self.image_matrix_buffer,text)
+                    pixmap = self.__conver2pixmap(self.image_matrix_buffer_3)
+                    self.image_pix_buffer_3 = pixmap
+                    self.__show_image(pixmap,self.scene_3)
+        return
+
+    def button_26_clicked(self):
+        if self.image_matrix_buffer is not None:
+            self.image_matrix_buffer_3 = otsu(self.image_matrix_buffer)
+            pixmap = self.__conver2pixmap(self.image_matrix_buffer_3)
+            self.image_pix_buffer_3 = pixmap
+            self.__show_image(pixmap,self.scene_3)
+        return
+
+    def button_27_clicked(self):
+        if self.image_matrix_buffer is not None:
+            self.image_matrix_buffer_3 = kittle(self.image_matrix_buffer)
+            pixmap = self.__conver2pixmap(self.image_matrix_buffer_3)
+            self.image_pix_buffer_3 = pixmap
+            self.__show_image(pixmap,self.scene_3)
+        return
+
+    def button_28_clicked(self):
+        video_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Image files (*.avi *.mp4) ") #pylint: disable=line-too-long
+        if video_path == '':
+            QMessageBox.information(self,"Warning","No file selected.")
+            return
+        else:
+            single_gauss(video_path)
+        return
+
+    def button_29_clicked(self):
+        video_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Image files (*.avi *.mp4) ") #pylint: disable=line-too-long
+        if video_path == '':
+            QMessageBox.information(self,"Warning","No file selected.")
+            return
+        else:
+            bulidbg(video_path)
+        return
+    
     def __conver2pixmap(self,img):
         if len(img.shape) > 2:
             cvimg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

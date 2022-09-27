@@ -1,13 +1,12 @@
-import imp
 import cv2
 import numpy as np
 import random
 from copy import deepcopy
 
 # 读一个图片并进行显示(图片路径需自己指定)
-# logo=cv2.imread("figures/lena.jpg")
+logo=cv2.imread("figures/lena.jpg")
 # logo=cv2.imread("figures/icon.jpeg")
-logo=cv2.imread("figures/logo_01.png")
+# logo=cv2.imread("figures/logo_01.png")
 # logo=cv2.imread("figures/source.jpg")
 # cv2.imshow("image",logo)
 # cv2.waitKey(0)
@@ -82,8 +81,51 @@ def diy_gaussian_filter(img,template = '[[1,2,1],[2,8,2],[1,2,1]]'):
                 filtered_img[row][colmun][ch] = np.sum(np.multiply(img[row-radius:row+radius+1,colmun-radius:colmun+radius+1:,ch],kernal))
     return filtered_img
 
+def otsu(img):
+    gray_img = rgb2gray(img)
+    h = gray_img.shape[0]
+    w = gray_img.shape[1]
+    N = h * w
+    threshold_t = 0
+    max_g = 0
 
-new_img = diy_gaussian_filter(logo,'[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]]')
+    # 遍历每一个灰度级
+    for t in range(256):
+        # 使用numpy直接对数组进行运算
+        n0 = gray_img[np.where(gray_img < t)]
+        n1 = gray_img[np.where(gray_img >= t)]
+        w0 = len(n0) / N
+        w1 = len(n1) / N
+        u0 = np.mean(n0) if len(n0) > 0 else 0.
+        u1 = np.mean(n1) if len(n0) > 0 else 0.
+
+        g = w0 * w1 * (u0 - u1) ** 2
+        if g > max_g:
+            max_g = g
+            threshold_t = t
+    # print('类间方差最大阈值：', threshold_t)
+    gray_img[gray_img < threshold_t] = 0
+    gray_img[gray_img >= threshold_t] = 255
+    return gray_img
+
+
+def kittle(img):
+    gray_img = rgb2gray(img)
+    edge = np.zeros(gray_img.shape,dtype=np.uint16)
+    uend = np.zeros(gray_img.shape,dtype=np.uint16)
+    for r in range(1,edge.shape[0]-1):
+        for c in range(1,edge.shape[1]-1):
+            fi = gray_img[r+1][c]-gray_img[r-1][c]
+            fj = int(gray_img[r][c+1]-gray_img[r][c-1])
+            edge[r][c] = max(abs(fi),abs(fj))
+            uend[r][c] = edge[r][c] * gray_img[r][c]
+
+    thres = np.sum(uend)/np.sum(edge)
+    gray_img[gray_img < thres] = 0
+    gray_img[gray_img >= thres] = 255
+    return gray_img
+
+new_img = kittle(logo)
 cv2.imshow("figure",new_img)
 cv2.imshow("figure1",logo)
 cv2.waitKey(0)
