@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.signal as sci
 from copy import deepcopy
-import random
+import random,pysift
 
 def __saturated(pix):
     if pix > 255:
@@ -589,3 +589,158 @@ def single_gauss(path):
                     break
         else:
             break
+
+def histmatch():
+    img1 = cv2.imread('figures/lena.jpg')
+    img2 = cv2.imread('figures/lena-1.jpg')
+    hsv_img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2HSV)
+    hsv_img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2HSV)
+    max_ = 0
+    temp = np.zeros_like(hsv_img2)
+    for i in range(0,hsv_img1.shape[0]-hsv_img2.shape[0]):
+        for j in range(0,hsv_img1.shape[1]-hsv_img2.shape[1]):
+            for x in range(i,hsv_img2.shape[0]+i):
+                for y in range(j,hsv_img2.shape[1]+j):
+                    temp[x-i][y-j] = hsv_img1[x][y]
+            mat1 = cv2.calcHist([temp], [0], None, [256], [0, 256])
+            mat1 = cv2.normalize(mat1,None,0,255,cv2.NORM_MINMAX)
+            mat2 = cv2.calcHist([hsv_img2], [0], None, [256], [0, 256])
+            mat2 = cv2.normalize(mat2,None,0,255,cv2.NORM_MINMAX)
+            match = cv2.compareHist(mat1, mat2,cv2.HISTCMP_CORREL)
+            print("src compare with src correlation value :",match)
+            if match >= max_:
+                max_ = match
+                x_ray = i
+                y_ray = j
+    rect = np.array([x_ray,y_ray,img2.shape[1],img2.shape[0]])
+    final_img = cv2.rectangle(hsv_img1,rect,(255,0,0),1,cv2.LINE_8,0)
+    return final_img,hsv_img2
+
+def tempmatch():
+    img1 = cv2.imread('figures/lena.jpg')
+    img2 = cv2.imread('figures/lena-1.jpg')
+    result = cv2.matchTemplate(img1, img2, cv2.TM_CCOEFF_NORMED, mask=None)
+    min_v, max_v, min_pt, max_pt = cv2.minMaxLoc(result)
+    final_img = cv2.rectangle(img1,[max_pt[0],max_pt[1],img2.shape[1],img2.shape[0]],(255,0,0),1,cv2.LINE_8,0)
+    
+    return final_img,img2
+
+def __rotation_invariant_LBP(img, radius=3, neighbors=8):
+    h,w=img.shape
+    dst = np.zeros((h-2*radius, w-2*radius),dtype=img.dtype)
+    for i in range(radius,h-radius):
+        for j in range(radius,w-radius):
+            # 获得中心像素点的灰度值
+            center = img[i,j]
+            for k in range(neighbors):
+                # 计算采样点对于中心点坐标的偏移量rx，ry
+                rx = radius * np.cos(2.0 * np.pi * k / neighbors)
+                ry = -(radius * np.sin(2.0 * np.pi * k / neighbors))
+                # 为双线性插值做准备
+                # 对采样点偏移量分别进行上下取整
+                x1 = int(np.floor(rx))
+                x2 = int(np.ceil(rx))
+                y1 = int(np.floor(ry))
+                y2 = int(np.ceil(ry))
+                # 将坐标偏移量映射到0-1之间
+                tx = rx - x1
+                ty = ry - y1
+                # 根据0-1之间的x，y的权重计算公式计算权重，权重与坐标具体位置无关，与坐标间的差值有关
+                w1 = (1-tx) * (1-ty)
+                w2 =    tx  * (1-ty)
+                w3 = (1-tx) *    ty
+                w4 =    tx  *    ty
+                # 根据双线性插值公式计算第k个采样点的灰度值
+                neighbor = img[i+y1,j+x1] * w1 + img[i+y2,j+x1] *w2 + img[i+y1,j+x2] *  w3 +img[i+y2,j+x2] *w4
+                # LBP特征图像的每个邻居的LBP值累加，累加通过与操作完成，对应的LBP值通过移位取得
+                dst[i-radius,j-radius] |= (neighbor>center)  <<  (np.uint8)(neighbors-k-1)
+    # 进行旋转不变处理
+    for i in range(dst.shape[0]):
+        for j in range(dst.shape[1]):
+            currentValue = dst[i,j]
+            minValue = currentValue
+            for k in range(1, neighbors):
+                # 对二进制编码进行循环左移，意思即选取移动过程中二进制码最小的那个作为最终值
+                temp = (np.uint8)(currentValue>>(neighbors-k)) |  (np.uint8)(currentValue<<k)
+                if temp < minValue:
+                    minValue = temp
+            dst[i,j] = minValue
+    return dst
+
+def lbp():
+    img1 = cv2.imread('figures/redball.jpg')
+    img2 = cv2.imread('figures/redball-1.jpg')
+    gray_img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    gray_img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    lbp_data1 = __rotation_invariant_LBP(gray_img1)
+    lbp_data2 = __rotation_invariant_LBP(gray_img2)
+
+    result = cv2.matchTemplate(lbp_data1, lbp_data2, cv2.TM_CCORR, mask=None)
+    min_v, max_v, min_pt, max_pt = cv2.minMaxLoc(result)
+    final_img = cv2.rectangle(img1,[max_pt[0],max_pt[1],img2.shape[1],img2.shape[0]],(255,0,0),1,cv2.LINE_8,0)
+
+    return lbp_data1,final_img,img2
+
+def sift():
+    MIN_MATCH_COUNT = 10
+
+    img1 = cv2.imread('figures/1.1.jpg', 0)  # queryImage
+    img2 = cv2.imread('figures/1.2.jpg', 0)  # trainImage
+
+    # Compute SIFT keypoints and descriptors
+    kp1, des1 = pysift.computeKeypointsAndDescriptors(img1)
+    kp2, des2 = pysift.computeKeypointsAndDescriptors(img2)
+
+    # Initialize and use FLANN
+    FLANN_INDEX_KDTREE = 0
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks = 50)
+    flann = cv2.FlannBasedMatcher(index_params, search_params)
+    matches = flann.knnMatch(des1, des2, k=2)
+
+    # Lowe's ratio test
+    good = []
+    for m, n in matches:
+        if m.distance < 0.7 * n.distance:
+            good.append(m)
+
+    if len(good) > MIN_MATCH_COUNT:
+        # Estimate homography between template and scene
+        src_pts = np.float32([ kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
+        dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
+
+        M = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)[0]
+
+        # Draw detected template in scene image
+        h, w = img1.shape
+        pts = np.float32([[0, 0],
+                        [0, h - 1],
+                        [w - 1, h - 1],
+                        [w - 1, 0]]).reshape(-1, 1, 2)
+        dst = cv2.perspectiveTransform(pts, M)
+
+        img2 = cv2.polylines(img2, [np.int32(dst)], True, 255, 3, cv2.LINE_AA)
+
+        h1, w1 = img1.shape
+        h2, w2 = img2.shape
+        nWidth = w1 + w2
+        nHeight = max(h1, h2)
+        hdif = int((h2 - h1) / 2)
+        newimg = np.zeros((nHeight, nWidth, 3), np.uint8)
+
+        for i in range(3):
+            newimg[hdif:hdif + h1, :w1, i] = img1
+            newimg[:h2, w1:w1 + w2, i] = img2
+
+        # Draw SIFT keypoint matches
+        for m in good:
+            pt1 = (int(kp1[m.queryIdx].pt[0]), int(kp1[m.queryIdx].pt[1] + hdif))
+            pt2 = (int(kp2[m.trainIdx].pt[0] + w1), int(kp2[m.trainIdx].pt[1]))
+            cv2.line(newimg, pt1, pt2, (255, 0, 0))
+
+        plt.imshow(newimg)    
+        plt.savefig('figures/result.jpg', dpi=100) 
+    else:
+        print("Not enough matches are found - %d/%d" % (len(good), MIN_MATCH_COUNT))
+
+    return img1,img2

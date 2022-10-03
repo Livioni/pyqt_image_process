@@ -13,7 +13,7 @@ from utility import rgb2gray,gray_histogram,histogram_equalize,gradient_sharpeni
                     roberts,sobel,laplace,krisch,canny,impluse_noise,gaussian_noise,\
                     mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter,\
                     affine_transform,perspective_transform,calib_camera,bicalib_camera,otsu,threshold,\
-                    kittle,bulidbg,single_gauss
+                    kittle,bulidbg,single_gauss,histmatch,tempmatch,lbp,sift
 
 class Widget(QWidget):
     def __init__(self, parent=None):
@@ -54,6 +54,11 @@ class Widget(QWidget):
         self.ui.pushButton_27.clicked.connect(self.button_27_clicked)
         self.ui.pushButton_28.clicked.connect(self.button_28_clicked)
         self.ui.pushButton_29.clicked.connect(self.button_29_clicked)
+        self.ui.pushButton_30.clicked.connect(self.button_30_clicked)
+        self.ui.pushButton_31.clicked.connect(self.button_31_clicked)
+        self.ui.pushButton_32.clicked.connect(self.button_32_clicked)
+        self.ui.pushButton_33.clicked.connect(self.button_33_clicked)
+    
         #graph views
         self.scene,self.scene_2,self.scene_3 = QGraphicsScene(),QGraphicsScene(),QGraphicsScene()
         self.ui.graphicsView.setScene(self.scene)
@@ -335,6 +340,69 @@ class Widget(QWidget):
             return
         else:
             bulidbg(video_path)
+        return
+
+    def button_30_clicked(self):
+        self.image_matrix_buffer = cv2.imread('figures/lena.jpg')
+        pixmap = self.__conver2pixmap(self.image_matrix_buffer)
+        self.__show_image(pixmap,self.scene)
+
+        self.image_matrix_buffer_3,self.image_matrix_buffer_2 = histmatch()
+        pixmap1 = self.__conver2pixmap(self.image_matrix_buffer_2)
+        pixmap2 = self.__conver2pixmap(self.image_matrix_buffer_3)
+        self.image_pix_buffer_2 = pixmap1
+        self.image_pix_buffer_3 = pixmap2
+        self.__show_image(pixmap1,self.scene_2)
+        self.__show_image(pixmap2,self.scene_3)
+        return
+
+    def button_31_clicked(self):
+        self.scene_2.clear()
+        self.scene_3.clear()
+        self.image_matrix_buffer = cv2.imread('figures/lena.jpg')
+        pixmap = self.__conver2pixmap(self.image_matrix_buffer)
+        self.__show_image(pixmap,self.scene)
+
+        self.image_matrix_buffer_3,self.image_matrix_buffer_2 = tempmatch()
+        pixmap1 = self.__conver2pixmap(self.image_matrix_buffer_2)
+        pixmap2 = self.__conver2pixmap(self.image_matrix_buffer_3)
+        self.image_pix_buffer_2 = pixmap1
+        self.image_pix_buffer_3 = pixmap2
+        self.__show_image(pixmap1,self.scene_2)
+        self.__show_image(pixmap2,self.scene_3)
+        return
+    
+    def button_32_clicked(self):
+        self.scene_2.clear()
+        self.scene_3.clear()
+        self.image_matrix_buffer = cv2.imread('figures/redball.jpg')
+        pixmap = self.__conver2pixmap(self.image_matrix_buffer)
+        self.__show_image(pixmap,self.scene)
+
+        self.image_matrix_buffer_2,self.image_matrix_buffer_3,raw = lbp()
+        pixmap1 = self.__conver2pixmap(self.image_matrix_buffer_2)
+        pixmap2 = self.__conver2pixmap(self.image_matrix_buffer_3)
+        self.image_pix_buffer_2 = pixmap1
+        self.image_pix_buffer_3 = pixmap2
+        self.__show_image(pixmap1,self.scene_2)
+        self.__show_image(pixmap2,self.scene_3)
+        cv2.imshow('region',raw)
+        cv2.waitKey(0)
+        return
+
+    def button_33_clicked(self):
+        sift()
+        self.image_matrix_buffer = cv2.imread('figures/1.1.jpg')
+        pixmap = self.__conver2pixmap(self.image_matrix_buffer)
+        self.__show_image(pixmap,self.scene)
+        self.image_matrix_buffer2 = cv2.imread('figures/1.2.jpg')
+        pixmap2 = self.__conver2pixmap(self.image_matrix_buffer2)
+        self.__show_image(pixmap2,self.scene_2)
+        self.image_matrix_buffer3 = cv2.imread('figures/result.jpg')
+        pixmap3 = self.__conver2pixmap(self.image_matrix_buffer3)
+        self.__show_image(pixmap3,self.scene_3)
+
+
         return
     
     def __conver2pixmap(self,img):

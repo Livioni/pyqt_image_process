@@ -226,11 +226,6 @@ class Ui_Widget(object):
 
         self.verticalLayout_5.addWidget(self.pushButton_23)
 
-        self.pushButton_24 = QPushButton(self.verticalLayoutWidget_5)
-        self.pushButton_24.setObjectName(u"pushButton_24")
-
-        self.verticalLayout_5.addWidget(self.pushButton_24)
-
         self.verticalLayoutWidget_6 = QWidget(Widget)
         self.verticalLayoutWidget_6.setObjectName(u"verticalLayoutWidget_6")
         self.verticalLayoutWidget_6.setGeometry(QRect(1190, 520, 220, 201))
@@ -267,6 +262,38 @@ class Ui_Widget(object):
         self.pushButton_29.setObjectName(u"pushButton_29")
 
         self.verticalLayout_6.addWidget(self.pushButton_29)
+
+        self.verticalLayoutWidget_7 = QWidget(Widget)
+        self.verticalLayoutWidget_7.setObjectName(u"verticalLayoutWidget_7")
+        self.verticalLayoutWidget_7.setGeometry(QRect(1430, 520, 220, 201))
+        self.verticalLayout_7 = QVBoxLayout(self.verticalLayoutWidget_7)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.label_9 = QLabel(self.verticalLayoutWidget_7)
+        self.label_9.setObjectName(u"label_9")
+        self.label_9.setMaximumSize(QSize(16777215, 72))
+
+        self.verticalLayout_7.addWidget(self.label_9)
+
+        self.pushButton_30 = QPushButton(self.verticalLayoutWidget_7)
+        self.pushButton_30.setObjectName(u"pushButton_30")
+
+        self.verticalLayout_7.addWidget(self.pushButton_30)
+
+        self.pushButton_31 = QPushButton(self.verticalLayoutWidget_7)
+        self.pushButton_31.setObjectName(u"pushButton_31")
+
+        self.verticalLayout_7.addWidget(self.pushButton_31)
+
+        self.pushButton_32 = QPushButton(self.verticalLayoutWidget_7)
+        self.pushButton_32.setObjectName(u"pushButton_32")
+
+        self.verticalLayout_7.addWidget(self.pushButton_32)
+
+        self.pushButton_33 = QPushButton(self.verticalLayoutWidget_7)
+        self.pushButton_33.setObjectName(u"pushButton_33")
+
+        self.verticalLayout_7.addWidget(self.pushButton_33)
 
 
         self.retranslateUi(Widget)
@@ -307,12 +334,16 @@ class Ui_Widget(object):
         self.pushButton_21.setText(QCoreApplication.translate("Widget", u"Perspective", None))
         self.pushButton_22.setText(QCoreApplication.translate("Widget", u"Camera Calibration", None))
         self.pushButton_23.setText(QCoreApplication.translate("Widget", u"Bi-camera Calibration", None))
-        self.pushButton_24.setText("")
         self.label_8.setText(QCoreApplication.translate("Widget", u"                   Detection", None))
         self.pushButton_25.setText(QCoreApplication.translate("Widget", u"Threshold", None))
         self.pushButton_26.setText(QCoreApplication.translate("Widget", u"OTSU", None))
         self.pushButton_27.setText(QCoreApplication.translate("Widget", u"Kittler", None))
         self.pushButton_28.setText(QCoreApplication.translate("Widget", u"Single Gaussian Model", None))
         self.pushButton_29.setText(QCoreApplication.translate("Widget", u"Mixed Gaussian Model", None))
+        self.label_9.setText(QCoreApplication.translate("Widget", u"           Objective Detection", None))
+        self.pushButton_30.setText(QCoreApplication.translate("Widget", u"Hsv Histogram Matching", None))
+        self.pushButton_31.setText(QCoreApplication.translate("Widget", u"Template Matching", None))
+        self.pushButton_32.setText(QCoreApplication.translate("Widget", u"Local Binary Pattern", None))
+        self.pushButton_33.setText(QCoreApplication.translate("Widget", u"SIFT", None))
     # retranslateUi
 

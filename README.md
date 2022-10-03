@@ -38,12 +38,16 @@ Non opencv library implementation. Easy to code in python but super slow.
 4. [X] Camera Calibration
 5. [X] Bi-Camera Calibration
 6. [X] Detections
+
     1. [X] Threshold
     2. [X] OTSU
     3. [X] Kittler
     4. [X] Single Gaussian Model
     5. [X] Mixed Gaussian Model
-
+    6. [X] Hsv Histogram Matching
+    7. [X] Template Matching
+    8. [X] Local Binary Pattern
+    9. [X] SIFT
 
 ## Links
 
@@ -60,3 +64,7 @@ Bi-Camera Calibration: https://blog.csdn.net/qq_36076137/article/details/1183834
 OTSU: https://blog.csdn.net/laonafahaodange/article/details/123746067
 
 Mixed Gaussian background modeling : https://zhuanlan.zhihu.com/p/90103849
+
+Local Binary Pattern: https://zhuanlan.zhihu.com/p/91768977
+
+SIFT : https://github.com/rmislam/PythonSIFT/blob/master/pysift.py
