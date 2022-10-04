@@ -21,6 +21,7 @@ Non opencv library implementation. Easy to code in python but super slow.
     3. [X] histogram equalization
     4. [X] gradient sharpen
     5. [X] Laplace sharpen
+
 2. [X] edge detection
 
     1. [X] Roberts
@@ -28,6 +29,7 @@ Non opencv library implementation. Easy to code in python but super slow.
     3. [X] Laplace
     4. [X] Krisch
     5. [X] Canny
+
 3. [X] Filter
 
     1. [X] average filter $3\times 3$.
@@ -35,8 +37,11 @@ Non opencv library implementation. Easy to code in python but super slow.
     3. [X] side window filter (average side window filter, also $3\times3$ ).
     4. [X] morphological filter : This function is for homework exclusively, please select the exlusive image.
     5. [X] Diy gaussian filter :  Please input gaussain template:  like $[[1,2,1],[2,8,2],[1,2,1]]$ or $[[1,4,6,4,1],[4,16,24,16,4],[6,24,36,24,6],[4,16,24,16,4],[1,4,6,4,1]]$.
+
 4. [X] Camera Calibration
+
 5. [X] Bi-Camera Calibration
+
 6. [X] Detections
 
     1. [X] Threshold
@@ -48,6 +53,12 @@ Non opencv library implementation. Easy to code in python but super slow.
     7. [X] Template Matching
     8. [X] Local Binary Pattern
     9. [X] SIFT
+
+7. Machine Learning
+
+    [X] SVM
+
+    [X] SVM+HOG
 
 ## Links
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1664</width>
-    <height>737</height>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -455,6 +455,46 @@
      <widget class="QPushButton" name="pushButton_33">
       <property name="text">
        <string>SIFT</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_8">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>740</y>
+     <width>211</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_8">
+    <item>
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>            Machine Learning</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_24">
+      <property name="text">
+       <string>SVM</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_34">
+      <property name="text">
+       <string>Hog SVM</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_35">
+      <property name="text">
+       <string>Haar</string>
       </property>
      </widget>
     </item>

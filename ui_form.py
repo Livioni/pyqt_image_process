@@ -22,7 +22,7 @@ class Ui_Widget(object):
     def setupUi(self, Widget):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
-        Widget.resize(1664, 737)
+        Widget.resize(1664, 917)
         self.verticalLayoutWidget = QWidget(Widget)
         self.verticalLayoutWidget.setObjectName(u"verticalLayoutWidget")
         self.verticalLayoutWidget.setGeometry(QRect(40, 520, 211, 201))
@@ -295,6 +295,32 @@ class Ui_Widget(object):
 
         self.verticalLayout_7.addWidget(self.pushButton_33)
 
+        self.verticalLayoutWidget_8 = QWidget(Widget)
+        self.verticalLayoutWidget_8.setObjectName(u"verticalLayoutWidget_8")
+        self.verticalLayoutWidget_8.setGeometry(QRect(290, 740, 211, 131))
+        self.verticalLayout_8 = QVBoxLayout(self.verticalLayoutWidget_8)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.label_10 = QLabel(self.verticalLayoutWidget_8)
+        self.label_10.setObjectName(u"label_10")
+
+        self.verticalLayout_8.addWidget(self.label_10)
+
+        self.pushButton_24 = QPushButton(self.verticalLayoutWidget_8)
+        self.pushButton_24.setObjectName(u"pushButton_24")
+
+        self.verticalLayout_8.addWidget(self.pushButton_24)
+
+        self.pushButton_34 = QPushButton(self.verticalLayoutWidget_8)
+        self.pushButton_34.setObjectName(u"pushButton_34")
+
+        self.verticalLayout_8.addWidget(self.pushButton_34)
+
+        self.pushButton_35 = QPushButton(self.verticalLayoutWidget_8)
+        self.pushButton_35.setObjectName(u"pushButton_35")
+
+        self.verticalLayout_8.addWidget(self.pushButton_35)
+
 
         self.retranslateUi(Widget)
 
@@ -345,5 +371,9 @@ class Ui_Widget(object):
         self.pushButton_31.setText(QCoreApplication.translate("Widget", u"Template Matching", None))
         self.pushButton_32.setText(QCoreApplication.translate("Widget", u"Local Binary Pattern", None))
         self.pushButton_33.setText(QCoreApplication.translate("Widget", u"SIFT", None))
+        self.label_10.setText(QCoreApplication.translate("Widget", u"            Machine Learning", None))
+        self.pushButton_24.setText(QCoreApplication.translate("Widget", u"SVM", None))
+        self.pushButton_34.setText(QCoreApplication.translate("Widget", u"Hog SVM", None))
+        self.pushButton_35.setText(QCoreApplication.translate("Widget", u"Haar", None))
     # retranslateUi
 

@@ -13,14 +13,14 @@ from utility import rgb2gray,gray_histogram,histogram_equalize,gradient_sharpeni
                     roberts,sobel,laplace,krisch,canny,impluse_noise,gaussian_noise,\
                     mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter,\
                     affine_transform,perspective_transform,calib_camera,bicalib_camera,otsu,threshold,\
-                    kittle,bulidbg,single_gauss,histmatch,tempmatch,lbp,sift
+                    kittle,bulidbg,single_gauss,histmatch,tempmatch,lbp,sift,hog_svm,svm_predict
 
 class Widget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_Widget()
         self.ui.setupUi(self)
-        self.setFixedSize(1664,737)
+        self.setFixedSize(1664,917)
 
         #buttom
         self.ui.ClearButton.clicked.connect(self.clear_windows)
@@ -47,7 +47,7 @@ class Widget(QWidget):
         self.ui.pushButton_21.clicked.connect(self.button_21_clicked)
         self.ui.pushButton_22.clicked.connect(self.button_22_clicked)
         self.ui.pushButton_23.clicked.connect(self.button_23_clicked)
-        
+        self.ui.pushButton_24.clicked.connect(self.button_24_clicked)
 
         self.ui.pushButton_25.clicked.connect(self.button_25_clicked)
         self.ui.pushButton_26.clicked.connect(self.button_26_clicked)
@@ -58,6 +58,7 @@ class Widget(QWidget):
         self.ui.pushButton_31.clicked.connect(self.button_31_clicked)
         self.ui.pushButton_32.clicked.connect(self.button_32_clicked)
         self.ui.pushButton_33.clicked.connect(self.button_33_clicked)
+        self.ui.pushButton_34.clicked.connect(self.button_34_clicked)
     
         #graph views
         self.scene,self.scene_2,self.scene_3 = QGraphicsScene(),QGraphicsScene(),QGraphicsScene()
@@ -401,10 +402,22 @@ class Widget(QWidget):
         self.image_matrix_buffer3 = cv2.imread('figures/result.jpg')
         pixmap3 = self.__conver2pixmap(self.image_matrix_buffer3)
         self.__show_image(pixmap3,self.scene_3)
-
-
         return
-    
+        
+    def button_24_clicked(self):
+        svm_predict()
+        return
+
+    def button_34_clicked(self):
+        QMessageBox.information(self,"Warning","This function is for homework exclusively, please select the exlusive image.")
+        img_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Image files (*.jpg *.jpeg *.bmp *.png) ") #pylint: disable=line-too-long
+        if img_path == '':
+            QMessageBox.information(self,"Warning","No file selected.")
+            return
+        else:  
+            hog_svm(img_path)
+        return
+
     def __conver2pixmap(self,img):
         if len(img.shape) > 2:
             cvimg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

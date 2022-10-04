@@ -744,3 +744,83 @@ def sift():
         print("Not enough matches are found - %d/%d" % (len(good), MIN_MATCH_COUNT))
 
     return img1,img2
+
+def svm_predict():
+    rand1 = np.array([[501,300],[10,501]])
+    rand2 = np.array([[255,10],[501,255],[10,501]])
+    label = np.array([[0],[0],[1],[1],[1]])
+
+    data = np.vstack((rand1,rand2))
+    data = np.array(data,dtype='float32')
+    svm = cv2.ml.SVM_create() 
+
+    svm.setType(cv2.ml.SVM_C_SVC) # svm type
+    svm.setKernel(cv2.ml.SVM_LINEAR) # line
+    svm.setC(0.01)
+    # 训练
+    result = svm.train(data,cv2.ml.ROW_SAMPLE,label)
+    # 预测
+    predicted_labels = np.zeros([501,501],dtype=np.int0)
+    for i in range(predicted_labels.shape[0]):
+        for j in range(predicted_labels.shape[1]):
+            predicted_labels[i][j] = svm.predict(np.array([[i,j]],dtype=np.float32))[1].item()
+    predicted_labels[np.where(predicted_labels==1)] = 255
+    predicted_labels = np.array(predicted_labels,dtype=np.uint8)
+
+    cv2.imshow("SVM",predicted_labels)
+    cv2.waitKey(0)
+    return
+
+def hog_svm(path):
+    winSize = (14,14)
+    blockSize = (7,7) 
+    blockStride = (1,1) 
+    cellSize = (7,7)
+    nBin = 9 
+    paths_list = ['sample/0/0.png','sample/1/0.png','sample/2/0.png','sample/3/0.png','sample/4/0.png',\
+                    'sample/5/0.png','sample/6/0.png','sample/7/0.png','sample/8/0.png','sample/9/0.png']
+
+    # 第二步：创造一个HOG描述子和检测器
+    hog = cv2.HOGDescriptor(winSize,blockSize,blockStride,cellSize,nBin)
+    # 第三步：启动SVM分离器
+    svm = cv2.ml.SVM_create()
+
+    # 第四步：计算Hog
+    featureNum = 5184
+    # 窗口对应的一维特征向量维数n
+    featureArray = np.zeros(((10),featureNum),np.float32)
+    # 创建Hog特征矩阵
+    labelArray = np.zeros(((10),1),np.int32)
+
+    for i in range(10):
+        fileName = paths_list[i]
+        # 导入正样本图片
+        img = cv2.imread(fileName)
+        img = cv2.resize(img, (28, 28))
+        hist = hog.compute(img,(5,5))
+        for j in range(0,featureNum):
+            featureArray[i,j] = hist[j]
+
+        labelArray[i,0] = i
+        
+    # SVM属性设置    
+    svm.setType(cv2.ml.SVM_C_SVC)
+    # SVM模型类型：C_SVC表示SVM分类器，C_SVR表示SVM回归
+    svm.setKernel(cv2.ml.SVM_LINEAR)
+    # 核函数类型： LINEAR：线性核函数（linear kernel），POLY:多项式核函数（ploynomial kernel），RBF:径向机核函数(radical basis function)，SIGMOID: 神经元的非线性作用函数核函数(Sigmoid tanh)，PRECOMPUTED：用户自定义核函数 
+    svm.setC(0.01)
+    # SVM类型（C_SVC/ EPS_SVR/ NU_SVR）的参数C,C表示惩罚因子，C越大表示对错误分类的惩罚越大
+
+    # 第六步：训练函数
+    ret = svm.train(featureArray,cv2.ml.ROW_SAMPLE,labelArray)
+
+    imageSrc = cv2.imread(path)
+    resized_img = cv2.resize(imageSrc, (28, 28))
+    test_hist = hog.compute(resized_img,(5,5))
+    testArray = np.zeros(((1),featureNum),np.float32)
+    for j in range(0,featureNum):
+        testArray[0,j] = test_hist[j]
+    result1 = svm.predict(testArray)
+    labels = int(result1[1].item())
+    print("预测结果为:",labels)
+    return
