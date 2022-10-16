@@ -89,6 +89,7 @@ if __name__ == '__main__':
 
     print( '[INFO] 提取图像Haar特征' )
     haar_feature = harr( haarblock_width, haarblock_height, Scale_num  )
+    # print(haar_feature)
     
        
 

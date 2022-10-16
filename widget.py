@@ -1,5 +1,4 @@
 # This Python file uses the following encoding: utf-8
-from importlib.resources import path
 import sys
 import cv2
 from PySide6.QtWidgets import QApplication, QWidget, QGraphicsScene, QFileDialog,QMessageBox,QInputDialog
@@ -13,7 +12,7 @@ from utility import rgb2gray,gray_histogram,histogram_equalize,gradient_sharpeni
                     roberts,sobel,laplace,krisch,canny,impluse_noise,gaussian_noise,\
                     mean_filter,median_filter,s_meanfilter,morphological_filter,diy_gaussian_filter,\
                     affine_transform,perspective_transform,calib_camera,bicalib_camera,otsu,threshold,\
-                    kittle,bulidbg,single_gauss,histmatch,tempmatch,lbp,sift,hog_svm,svm_predict
+                    kittle,bulidbg,single_gauss,histmatch,tempmatch,lbp,sift,hog_svm,svm_predict,camshift,engender
 
 class Widget(QWidget):
     def __init__(self, parent=None):
@@ -59,6 +58,8 @@ class Widget(QWidget):
         self.ui.pushButton_32.clicked.connect(self.button_32_clicked)
         self.ui.pushButton_33.clicked.connect(self.button_33_clicked)
         self.ui.pushButton_34.clicked.connect(self.button_34_clicked)
+        self.ui.pushButton_35.clicked.connect(self.button_35_clicked)
+        self.ui.pushButton_36.clicked.connect(self.button_36_clicked)
     
         #graph views
         self.scene,self.scene_2,self.scene_3 = QGraphicsScene(),QGraphicsScene(),QGraphicsScene()
@@ -326,7 +327,7 @@ class Widget(QWidget):
         return
 
     def button_28_clicked(self):
-        video_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Image files (*.avi *.mp4) ") #pylint: disable=line-too-long
+        video_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Video files (*.avi *.mp4) ") #pylint: disable=line-too-long
         if video_path == '':
             QMessageBox.information(self,"Warning","No file selected.")
             return
@@ -335,7 +336,7 @@ class Widget(QWidget):
         return
 
     def button_29_clicked(self):
-        video_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Image files (*.avi *.mp4) ") #pylint: disable=line-too-long
+        video_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Video files (*.avi *.mp4) ") #pylint: disable=line-too-long
         if video_path == '':
             QMessageBox.information(self,"Warning","No file selected.")
             return
@@ -415,7 +416,27 @@ class Widget(QWidget):
             QMessageBox.information(self,"Warning","No file selected.")
             return
         else:  
-            hog_svm(img_path)
+            hog_svm(img_path) 
+        return
+
+    def button_35_clicked(self):
+        QMessageBox.information(self,"Warning","This function is for homework exclusively, please select the exlusive image.")
+        img_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Image files (*.jpg *.jpeg *.bmp *.png) ") #pylint: disable=line-too-long
+        if img_path == '':
+            QMessageBox.information(self,"Warning","No file selected.")
+            return
+        else:  
+            engender(img_path)
+        return
+
+    def button_36_clicked(self):
+        QMessageBox.information(self,"Warning","This function is for homework exclusively, please select the exlusive video.")
+        img_path, _ = QFileDialog.getOpenFileName(self, 'Open file', filter="Video files (*.avi *.mp4) ") #pylint: disable=line-too-long
+        if img_path == '':
+            QMessageBox.information(self,"Warning","No file selected.")
+            return
+        else:  
+            camshift(img_path)
         return
 
     def __conver2pixmap(self,img):

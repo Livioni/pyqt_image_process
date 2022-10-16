@@ -824,3 +824,131 @@ def hog_svm(path):
     labels = int(result1[1].item())
     print("预测结果为:",labels)
     return
+
+
+def integral( img ):
+    #积分图像比原始图像多一行一列，积分图像第一行第一列为0
+    integimg = np.zeros( shape = (img.shape[0] + 1, img.shape[1] + 1), dtype = np.int32 )
+    for i in range( 1, img.shape[0] ):
+        for j in range( 1, img.shape[1] ):
+            integimg[i][j] = img[i][j] + integimg[i-1][j] + integimg[i][j-1] - integimg[i-1][j-1]
+    # plt.imshow( integimg )
+    # plt.show()
+    print( 'Done!' )
+    return integimg
+
+#获取单一尺度的Haar特征
+def haar_onescale( img, integimg, haarblock_width, haarblock_height  ):
+    #步长为1， no padding
+    haarimg = np.zeros( shape = ( img.shape[0] - haarblock_width + 1, img.shape[1] - haarblock_height + 1 ), dtype = np.int32 )
+    # plt.imshow( haarimg )
+    # plt.show()
+    haar_feature_onescale = []
+    for i in range( haarimg.shape[0] ):
+        for j in range( haarimg.shape[1] ):
+            #i,j映射回原图形的坐标
+            m = haarblock_width + i
+            n = haarblock_height + i
+            haar_all = integimg[m][n] - integimg[m-haarblock_width][n] - integimg[m][n-haarblock_height] + integimg[m-haarblock_width][n-haarblock_height]
+            haar_black = integimg[m][n- int( haarblock_height/2 )] - integimg[m-haarblock_width][n-int( haarblock_height/2 )]- integimg[m][n-haarblock_height] + integimg[m-haarblock_width][n-haarblock_height]
+            #1*all - 2*black = white - black
+            haarimg[i][j] = 1 * haar_all - 2 * haar_black
+            haar_feature_onescale.append( haarimg[i][j] )
+    # plt.imshow( haarimg )
+    # plt.show()
+    print( ' 当前尺度下的Haar特征维度为： {}'.format( len( haar_feature_onescale ) ) )
+    
+    return haar_feature_onescale
+
+def harr( haarblock_width, haarblock_height, Scale_num,img,integimg):
+    feature = []
+    haar_num = 0
+    for i in range( Scale_num):
+        haarblock_width = i*haarblock_width + 24
+        haarblock_height = i*haarblock_height + 24
+        print( '    当前 Haarblock 尺度为: ( {}, {} )'.format( haarblock_height, haarblock_width ) ) 
+        haar_feature_onescale = haar_onescale(img, integimg, haarblock_width, haarblock_height )
+        haar_num += len( haar_feature_onescale ) 
+        feature.append( haar_feature_onescale )
+        haarblock_width = 24
+        haarblock_height = 24
+    #计算总的Haar特征维度
+    print( '[INFO] 计算Haar特征维数' )
+    print( '    Haar特征总的维度为： {}'.format( haar_num ) )
+    return feature
+
+def engender(path):
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE )
+    if ( img is None ):
+        print( 'Not read img.' )
+    #确定Haarblock的大小
+    haarblock_width = 24
+    haarblock_height = 24
+    width_limt = int( img.shape[0] / haarblock_width )
+    height_limt = int( img.shape[1] / haarblock_height )
+    print( '--行方向尺度个数为: {}， 列方向尺度个数为： {}'.format( width_limt, height_limt ) )
+    #可获取的尺度数量
+    Scale_num = min( height_limt, width_limt )
+    print( '--可用尺度个数为： {}'.format( Scale_num ) )
+    #获取积分图像
+    print( '[INFO] 计算积分图像' )
+    integimg = integral( img )
+    print( '[INFO] 提取图像Haar特征' )
+    haar_feature = harr(haarblock_width, haarblock_height, Scale_num, img, integimg)
+    return
+
+def onMouse(event, x, y, flags, prams):   
+    global xs,ys,ws,hs,selectObject,xo,yo,trackObject  
+    if selectObject == True:  
+        xs = min(x, xo)  
+        ys = min(y, yo)  
+        ws = abs(x-xo)  
+        hs = abs(y-yo)  
+    if event == cv2.EVENT_LBUTTONDOWN:  
+        xo,yo = x, y  
+        xs,ys,ws,hs= x, y, 0, 0  
+        selectObject = True  
+    elif event == cv2.EVENT_LBUTTONUP:  
+        selectObject = False  
+        trackObject = -1  
+
+def camshift(path):
+    global xs,ys,ws,hs,selectObject,xo,yo,trackObject  
+    xs,ys,ws,hs = 0,0,0,0  #selection.x selection.y  
+    xo,yo=0,0 #origin.x origin.y  
+    selectObject = False  
+    trackObject = 0  
+    cap = cv2.VideoCapture(path)  
+    ret,frame = cap.read()  
+    cv2.namedWindow('imshow')  
+    cv2.setMouseCallback('imshow',onMouse)  
+    term_crit = ( cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1 )  
+    while(True):  
+        ret,frame = cap.read()  
+        if frame is not None:
+            if trackObject != 0:  
+                hsv =  cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  
+                mask = cv2.inRange(hsv, np.array((0., 30.,10.)), np.array((180.,256.,255.)))  
+                if trackObject == -1:  
+                    track_window=(xs,ys,ws,hs)  
+                    maskroi = mask[ys:ys+hs, xs:xs+ws]  
+                    hsv_roi = hsv[ys:ys+hs, xs:xs+ws]  
+                    roi_hist = cv2.calcHist([hsv_roi],[0],maskroi,[180],[0,180])  
+                    cv2.normalize(roi_hist,roi_hist,0,255,cv2.NORM_MINMAX)  
+                    trackObject = 1  
+                dst = cv2.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)  
+                dst &= mask  
+                ret, track_window = cv2.CamShift(dst, track_window, term_crit)  
+                pts = cv2.boxPoints(ret)  
+                pts = np.int0(pts)  
+                img2 = cv2.polylines(frame,[pts],True, 255,2)  
+                
+            if selectObject == True and ws>0 and hs>0:  
+                cv2.imshow('imshow1',frame[ys:ys+hs,xs:xs+ws])  
+                cv2.bitwise_not(frame[ys:ys+hs,xs:xs+ws],frame[ys:ys+hs,xs:xs+ws])  
+            cv2.imshow('imshow',frame)  
+            if  cv2.waitKey(10)==27:  
+                break  
+        else:
+            break
+    cv2.destroyAllWindows()  

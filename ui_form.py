@@ -297,7 +297,7 @@ class Ui_Widget(object):
 
         self.verticalLayoutWidget_8 = QWidget(Widget)
         self.verticalLayoutWidget_8.setObjectName(u"verticalLayoutWidget_8")
-        self.verticalLayoutWidget_8.setGeometry(QRect(290, 740, 211, 131))
+        self.verticalLayoutWidget_8.setGeometry(QRect(290, 740, 211, 161))
         self.verticalLayout_8 = QVBoxLayout(self.verticalLayoutWidget_8)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
@@ -320,6 +320,11 @@ class Ui_Widget(object):
         self.pushButton_35.setObjectName(u"pushButton_35")
 
         self.verticalLayout_8.addWidget(self.pushButton_35)
+
+        self.pushButton_36 = QPushButton(self.verticalLayoutWidget_8)
+        self.pushButton_36.setObjectName(u"pushButton_36")
+
+        self.verticalLayout_8.addWidget(self.pushButton_36)
 
 
         self.retranslateUi(Widget)
@@ -375,5 +380,6 @@ class Ui_Widget(object):
         self.pushButton_24.setText(QCoreApplication.translate("Widget", u"SVM", None))
         self.pushButton_34.setText(QCoreApplication.translate("Widget", u"Hog SVM", None))
         self.pushButton_35.setText(QCoreApplication.translate("Widget", u"Haar", None))
+        self.pushButton_36.setText(QCoreApplication.translate("Widget", u"Camshift", None))
     # retranslateUi
 
