@@ -52,14 +52,10 @@ Non opencv library implementation. Easy to code in python but super slow.
     9. [X] SIFT
 
 7. Machine Learning
-
-   [X] SVM
-
-   [X] SVM+HOG
-   
-   [X] Haar features
-   
-   [X] Camshift
+    1. [X] SVM
+    2. [X] SVM+HOG
+    3. [X] Haar features
+    4. [X] Camshift
 
 ## Links
 
